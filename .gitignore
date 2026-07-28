@@ -3,3 +3,10 @@ config/imapd.conf
 config/saslauthd.conf
 config/cyrus.conf
 .claude/
+
+data/lib/*
+!data/lib/.gitkeep
+data/spool/*
+!data/spool/.gitkeep
+data/tls/*
+!data/tls/.gitkeep

@@ -10,15 +10,9 @@ services:
     volumes:
       - ./config/imapd.conf:/etc/imapd.conf:ro
       - ./config/cyrus.conf:/etc/cyrus.conf:ro
-      - cyrus_data:/var/lib/cyrus
-      - cyrus_spool:/var/spool/cyrus
-      - cyrus_tls:/etc/cyrus/tls
+      - ./data/lib:/var/lib/cyrus
+      - ./data/spool:/var/spool/cyrus
+      - ./data/tls:/etc/cyrus/tls
       # To use your own certificate instead of the generated self-signed one,
-      # bind-mount it here as server.crt/server.key and drop the cyrus_tls volume above.
-      # - ./certs:/etc/cyrus/tls
+      # just drop server.crt/server.key directly into ./data/tls.
     restart: unless-stopped
-
-volumes:
-  cyrus_data:
-  cyrus_spool:
-  cyrus_tls:
