@@ -38,14 +38,18 @@ umask: 077
 
 ### MAILBOXES AND QUOTA ###
 
-autocreate_quota: 0
+autocreate_quota: 512000
 autocreate_quota_messages: -1
+# Default (disabled): INBOX only gets auto-created on IMAP/POP3 login, not
+# on inbound LMTP delivery. With this off, mail for a not-yet-logged-in
+# user arriving via LMTP before their first login will bounce rather than
+# auto-creating their INBOX to accept it.
+autocreate_post: 0
 autocreate_inbox_folders: Trash | Spam | Sent | Draft
 # No shared folders to auto-subscribe to yet. Cyrus rejects an empty value
 # outright ("empty option value"), so this must stay commented, not blank,
 # until there's an actual shared folder (created + permissioned) to list here.
 #autocreate_subscribe_sharedfolders:
-autocreate_subscribe_sharedfolders: 
 
 
 altnamespace: yes
