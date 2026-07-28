@@ -124,5 +124,8 @@ tls_session_timeout: 1440
 
 lmtpsocket: /run/cyrus/socket/lmtp
 idlesocket: /run/cyrus/socket/idle
+# Fallback poll interval imapd uses when idled is unreachable/not running.
+# Default shown; uncomment to change.
+#imapidlepoll: 60s
 notifysocket: /run/cyrus/socket/notify
 syslog_prefix: cyrus_imap
