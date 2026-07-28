@@ -7,6 +7,16 @@ START {
 	tlsprune	cmd="/usr/sbin/cyrus tls_prune"
 }
 
+# idled binds its own socket (idlesocket in imapd.conf) rather than accepting
+# one master hands it - giving it a listen= in SERVICES made master pre-bind
+# the same path, so every spawned idled instance failed to bind and died
+# instantly, and prefork=1 respawned it in a tight infinite loop (thousands
+# of processes, 100%+ CPU, took the whole host down). DAEMON has no listen=
+# for exactly this reason.
+DAEMON {
+	idled		cmd="idled"
+}
+
 SERVICES {
 	imap		cmd="imapd -U 30" listen="imap" prefork=0 maxchild=100
 	imaps		cmd="imapd -s -U 30" listen="imaps" prefork=0 maxchild=100
@@ -19,7 +29,6 @@ SERVICES {
 	sieve		cmd="timsieved" listen="localhost:sieve" prefork=0 maxchild=100
 
 	notify		cmd="notifyd" listen="/run/cyrus/socket/notify" proto="udp" prefork=1
-	idled		cmd="idled" listen="/run/cyrus/socket/idle" prefork=1
 }
 
 EVENTS {
