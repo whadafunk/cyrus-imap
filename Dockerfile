@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		sasl2-bin \
 		libsasl2-modules-ldap \
 		openssl \
+		ca-certificates \
 	&& rm -rf /var/lib/apt/lists/*
 
 # bookworm-slim's /etc/services has no "lmtp" entry, so cyrus.conf's

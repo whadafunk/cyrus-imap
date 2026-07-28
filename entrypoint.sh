@@ -20,6 +20,15 @@ chown cyrus:mail "$CERT_DIR"/server.key "$CERT_DIR"/server.crt
 chmod 640 "$CERT_DIR"/server.key
 chmod 644 "$CERT_DIR"/server.crt
 
+# Trust our own cert for TLS clients running inside this container (e.g.
+# cyradm via docker exec). /usr/local/share/ca-certificates + /etc/ssl/certs
+# live on the container's own root filesystem, not a volume, so this has to
+# run on every boot, not just first boot. This has no effect on external
+# clients (real mail clients, cyradm run from outside the container) - their
+# own OS/trust store is unrelated to what's inside this container.
+cp "$CERT_DIR/server.crt" /usr/local/share/ca-certificates/cyrus-imap-selfsigned.crt
+update-ca-certificates >/dev/null
+
 # /run is not persistent storage; recreate the sockets/proc dirs cyrus expects every boot.
 mkdir -p /run/cyrus/proc /run/cyrus/lock /run/cyrus/socket
 chown -R cyrus:mail /run/cyrus
