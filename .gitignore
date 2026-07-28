@@ -1,12 +1,16 @@
-.env
-config/imapd.conf
-config/saslauthd.conf
-config/cyrus.conf
 .claude/
 
-data/lib/*
-!data/lib/.gitkeep
-data/spool/*
-!data/spool/.gitkeep
-data/tls/*
-!data/tls/.gitkeep
+cyrus-imap/.env
+cyrus-imap/config/imapd.conf
+cyrus-imap/config/saslauthd.conf
+cyrus-imap/config/cyrus.conf
+
+cyrus-imap/data/lib/*
+!cyrus-imap/data/lib/.gitkeep
+cyrus-imap/data/spool/*
+!cyrus-imap/data/spool/.gitkeep
+cyrus-imap/data/tls/*
+!cyrus-imap/data/tls/.gitkeep
+
+roundcube/data/*
+!roundcube/data/.gitkeep

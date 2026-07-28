@@ -29,9 +29,13 @@ any particular variant-switching mechanism without asking.
 
 ## Commands
 
+Run from the repo root — `docker-compose.yml` lives there, not in this
+`cyrus-imap/` folder, so every component in the repo can be run independently
+from one place.
+
 ```sh
-cp config/imapd.conf.example config/imapd.conf
-cp config/cyrus.conf.example config/cyrus.conf
+cp cyrus-imap/config/imapd.conf.example cyrus-imap/config/imapd.conf
+cp cyrus-imap/config/cyrus.conf.example cyrus-imap/config/cyrus.conf
 docker compose up -d --build  # build image and start the container
 docker compose logs -f        # follow entrypoint / cyrus master output
 docker compose down           # stop (add -v to also drop the named volumes)

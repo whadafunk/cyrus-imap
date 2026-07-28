@@ -1,6 +1,6 @@
 services:
   cyrus-imap:
-    build: .
+    build: ./cyrus-imap
     image: cyrus-imap:local
     ports:
       - "143:143"
@@ -8,11 +8,24 @@ services:
     environment:
       TLS_CN: ${TLS_CN:-localhost}
     volumes:
-      - ./config/imapd.conf:/etc/imapd.conf:ro
-      - ./config/cyrus.conf:/etc/cyrus.conf:ro
-      - ./data/lib:/var/lib/cyrus
-      - ./data/spool:/var/spool/cyrus
-      - ./data/tls:/etc/cyrus/tls
+      - ./cyrus-imap/config/imapd.conf:/etc/imapd.conf:ro
+      - ./cyrus-imap/config/cyrus.conf:/etc/cyrus.conf:ro
+      - ./cyrus-imap/data/lib:/var/lib/cyrus
+      - ./cyrus-imap/data/spool:/var/spool/cyrus
+      - ./cyrus-imap/data/tls:/etc/cyrus/tls
       # To use your own certificate instead of the generated self-signed one,
-      # just drop server.crt/server.key directly into ./data/tls.
+      # just drop server.crt/server.key directly into ./cyrus-imap/data/tls.
+    restart: unless-stopped
+
+  roundcube:
+    image: roundcube/roundcubemail:latest
+    environment:
+      ROUNDCUBEMAIL_DEFAULT_HOST: ssl://cyrus-imap
+    volumes:
+      - ./roundcube/config/roundcube.config.inc.php:/var/roundcube/config/roundcube.config.inc.php:ro
+      - ./roundcube/data:/var/roundcube/db
+    ports:
+      - "8090:80"
+    depends_on:
+      - cyrus-imap
     restart: unless-stopped
