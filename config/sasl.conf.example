@@ -1,0 +1,21 @@
+pwcheck_method: auxprop
+auxprop_plugin: sql
+
+allowanonymouslogin: no
+allowplaintext: yes
+pwcheck_method: auxprop
+mech_list: CRAM-MD5 DIGEST-MD5 PLAIN LOGIN
+
+
+
+# SQL plugin settings
+sql_engine: mysql
+sql_hostnames: 127.0.0.1
+sql_user: cyrus
+sql_passwd: strongpassword
+sql_database: maildb
+
+# Query must return the password field
+#sql_select: SELECT password FROM users WHERE username = '%u@%r
+#sql_select: SELECT password FROM users WHERE username = '%u' AND userrealm = '%r'
+sql_usessl: no

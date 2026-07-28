@@ -1,0 +1,35 @@
+# Cyrus master process configuration - copy to cyrus.conf and edit as needed.
+# See cyrus.conf(5).
+
+START {
+	recover		cmd="/usr/sbin/cyrus ctl_cyrusdb -r"
+	delprune	cmd="/usr/sbin/cyrus expire -E 3"
+	tlsprune	cmd="/usr/sbin/cyrus tls_prune"
+}
+
+SERVICES {
+	imap		cmd="imapd -U 30" listen="imap" prefork=0 maxchild=100
+	imaps		cmd="imapd -s -U 30" listen="imaps" prefork=0 maxchild=100
+
+	# Required for local mail delivery via LMTP.
+	lmtpunix	cmd="lmtpd" listen="/run/cyrus/socket/lmtp" prefork=0 maxchild=20
+	lmtp        cmd="lmtpd -a" listen="0.0.0.0:lmtp" prefork=0 maxchild=20
+
+	# Sieve management, bound to localhost only (matches Debian default).
+	sieve		cmd="timsieved" listen="localhost:sieve" prefork=0 maxchild=100
+
+	notify		cmd="notifyd" listen="/run/cyrus/socket/notify" proto="udp" prefork=1
+	idled		cmd="idled" listen="/run/cyrus/socket/idle" prefork=1
+}
+
+EVENTS {
+	checkpoint	cmd="/usr/sbin/cyrus ctl_cyrusdb -c" period=30
+	delprune	cmd="/usr/sbin/cyrus expire -E 3" at=0401
+	tlsprune	cmd="/usr/sbin/cyrus tls_prune" at=0401
+	deleteprune	cmd="/usr/sbin/cyrus expire -E 4 -D 28" at=0430
+	expungeprune	cmd="/usr/sbin/cyrus expire -E 4 -X 28" at=0445
+# reindex changed mailboxes (fulltext) approximately every other hour
+    squatter1       cmd="/usr/bin/nice -n 19 /usr/sbin/cyrus squatter -s60" period=120
+# reindex all mailboxes (fulltext) daily
+    squattera       cmd="/usr/sbin/cyrus squatter" at=0517
+}

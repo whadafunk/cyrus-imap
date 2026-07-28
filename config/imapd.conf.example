@@ -1,0 +1,128 @@
+# Cyrus imapd.conf - copy to imapd.conf and edit as needed.
+# See imapd.conf(5).
+
+### GLOBAL IMAP SERVICE PARAMETERS ###
+
+servername: mail.upsigma.cc
+serverinfo: on
+maxlogins_per_host: 15
+maxlogins_per_user: 2
+maxmessagesize: 26214400
+sendmail: /usr/sbin/sendmail
+#httpmodules: caldav carddav
+#mailnotifier: zephyr
+#sievenotifier: zephyr
+
+#reject8bit: no
+munge8bit: yes
+lmtp_strict_rfc2821: 1
+lmtp_downcase_rcpt: yes
+
+lmtp_over_quota_perm_failure: 0
+lmtp_strict_quota: 0
+
+
+### FILE RELATED SETTINGS ###
+
+configdirectory: /var/lib/cyrus
+proc_path: /run/cyrus/proc
+mboxname_lockpath: /run/cyrus/lock
+
+defaultpartition: default
+partition-default: /var/spool/cyrus/mail
+hashimapspool: yes
+fulldirhash: yes
+sievedir: /var/spool/sieve
+sieveusehomedir: false
+umask: 077
+
+### MAILBOXES AND QUOTA ###
+
+autocreate_quota: -1
+autocreate_quota_messages: -1
+autocreate_inbox_folders: Trash | Spam | Sent | Draft
+# No shared folders to auto-subscribe to yet. Cyrus rejects an empty value
+# outright ("empty option value"), so this must stay commented, not blank,
+# until there's an actual shared folder (created + permissioned) to list here.
+#autocreate_subscribe_sharedfolders:
+autocreate_subscribe_sharedfolders: 
+
+
+altnamespace: yes
+unixhierarchysep: yes
+delete_prefix: DELETE
+delete_mode: immediate
+userprefix: "Other users"
+sharedprefix: "Shared folders"
+
+
+# --- AUTHENTICATION AND AUTHORIZATION ---
+
+loginrealms: upsigma.cc turtabunicii.ro radiobarikada.ro home.lan
+virtdomains: userid
+defaultdomain: home.lan
+username_tolower: yes
+
+allowanonymouslogin: no
+defaultacl: anyone lsr
+
+admins: admin admin@upsigma.cc admin@home.lan
+#lmtp_admins: cyrus
+#mupdate_admins: cyrus
+#imap_admins: cyrus
+#sieve_admins: cyrus
+
+# --- SASL ---
+
+allowplaintext: no
+sasl_mech_list: PLAIN LOGIN
+sasl_auto_transition: no
+sasl_minimum_layer: 0
+sasl_maximum_layer: 256
+sasl_pwcheck_method: saslauthd
+sasl_saslauthd_path: /var/run/saslauthd/mux
+
+#sasl_pwcheck_method: auxprop
+#sasl_auxprop_plugin: sql
+#sasl_sql_engine: mysql
+#sasl_sql_hostnames: localhost
+#sasl_sql_usessl: yes
+#sasl_sql_database: email
+#sasl_sql_user: email_admin
+#sasl_sql_passwd: changeme
+#sasl_sql_select: SELECT UserPassword from email.credentials where AccountName = '%u' and Domain = '%r'
+
+
+# --- TLS ---
+tls_server_cert: /etc/cyrus/tls/server.crt
+tls_server_key: /etc/cyrus/tls/server.key
+#imap_tls_server_cert: /etc/ssl/certs/cyrus-imap.pem
+#imap_tls_server_key: /etc/ssl/private/cyrus-imap.key
+#pop3_tls_server_cert: /etc/ssl/certs/cyrus-pop3.pem
+#pop3_tls_server_key: /etc/ssl/private/cyrus-pop3.key
+#lmtp_tls_server_cert: /etc/ssl/certs/cyrus-lmtp.pem
+#lmtp_tls_server_key: /etc/ssl/private/cyrus-lmtp.key
+#sieve_tls_server_cert: /etc/ssl/certs/cyrus-sieve.pem
+#sieve_tls_server_key: /etc/ssl/private/cyrus-sieve.key
+#tls_client_ca_file: /etc/ssl/certs/cyrus-imapd-ca.pem
+#tls_client_ca_dir: /etc/ssl/certs
+
+#tls_ciphers: TLSv1.2:+TLSv1:+HIGH:!aNULL:@STRENGTH
+#tls_versions: tls1_0 tls1_1 tls1_2
+
+#tls_require_cert: false
+#imap_tls_require_cert: false
+#pop3_tls_require_cert: false
+#lmtp_tls_require_cert: false
+#sieve_tls_require_cert: false
+
+tls_session_timeout: 1440
+
+
+
+ ## KEEP THESE IN SYNC WITH cyrus.conf ##
+
+lmtpsocket: /run/cyrus/socket/lmtp
+idlesocket: /run/cyrus/socket/idle
+notifysocket: /run/cyrus/socket/notify
+syslog_prefix: cyrus_imap

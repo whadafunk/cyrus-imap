@@ -1,0 +1,25 @@
+# saslauthd LDAP backend configuration - copy to saslauthd.conf and fill in
+# your LDAP server details. See LDAP_SASLAUTHD docs in cyrus-sasl2-doc, or
+# `strings /usr/sbin/saslauthd | grep '^ldap_'` for the full key list.
+
+ldap_servers: ldap://ldap.example.com
+ldap_version: 3
+
+ldap_search_base: ou=people,dc=example,dc=com
+ldap_filter: (uid=%u)
+ldap_scope: sub
+
+# Service/bind account saslauthd uses to search LDAP before verifying the
+# user's own bind. Needs read access under ldap_search_base.
+ldap_auth_method: bind
+ldap_bind_dn: cn=admin,dc=example,dc=com
+ldap_bind_pw: changeme
+
+ldap_start_tls: no
+ldap_tls_check_peer: yes
+# ldap_tls_cacert_file: /etc/cyrus/tls/ldap-ca.pem
+
+ldap_timeout: 10
+ldap_time_limit: 10
+ldap_restart: yes
+ldap_referrals: yes
