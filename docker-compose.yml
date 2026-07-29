@@ -21,7 +21,7 @@ services:
   roundcube:
     image: roundcube/roundcubemail:latest
     environment:
-      ROUNDCUBEMAIL_DEFAULT_HOST: ssl://cyrus-imap:3890
+      ROUNDCUBEMAIL_DEFAULT_HOST: ssl://cyrus-imap:993
     volumes:
       - ./roundcube/config/roundcube.config.inc.php:/var/roundcube/config/roundcube.config.inc.php:ro
       - ./roundcube/data:/var/roundcube/db
