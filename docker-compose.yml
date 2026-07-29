@@ -10,6 +10,7 @@ services:
     volumes:
       - ./cyrus-imap/config/imapd.conf:/etc/imapd.conf:ro
       - ./cyrus-imap/config/cyrus.conf:/etc/cyrus.conf:ro
+      - ./cyrus-imap/config/saslauthd.conf:/etc/saslauthd.conf.src:ro
       - ./cyrus-imap/data/lib:/var/lib/cyrus
       - ./cyrus-imap/data/spool:/var/spool/cyrus
       - ./cyrus-imap/data/tls:/etc/cyrus/tls
@@ -20,7 +21,7 @@ services:
   roundcube:
     image: roundcube/roundcubemail:latest
     environment:
-      ROUNDCUBEMAIL_DEFAULT_HOST: ssl://cyrus-imap
+      ROUNDCUBEMAIL_DEFAULT_HOST: ssl://cyrus-imap:3890
     volumes:
       - ./roundcube/config/roundcube.config.inc.php:/var/roundcube/config/roundcube.config.inc.php:ro
       - ./roundcube/data:/var/roundcube/db

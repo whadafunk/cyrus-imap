@@ -2,9 +2,17 @@
 set -euo pipefail
 
 # imapd.conf and cyrus.conf are plain, static files bind-mounted in by
-# docker-compose (see docker-compose.yml) - no rendering needed.
+# docker-compose (see docker-compose.yml) - no rendering needed. saslauthd.conf
+# is mounted read-only at a staging path and copied here so we can lock down
+# its permissions (it holds ldap_bind_pw in cleartext) without mutating the
+# host-mounted source file.
 [ -f /etc/imapd.conf ] || { echo "/etc/imapd.conf not found - mount config/imapd.conf there" >&2; exit 1; }
 [ -f /etc/cyrus.conf ] || { echo "/etc/cyrus.conf not found - mount config/cyrus.conf there" >&2; exit 1; }
+[ -f /etc/saslauthd.conf.src ] || { echo "/etc/saslauthd.conf.src not found - mount config/saslauthd.conf there" >&2; exit 1; }
+
+cp /etc/saslauthd.conf.src /etc/saslauthd.conf
+chown root:sasl /etc/saslauthd.conf
+chmod 640 /etc/saslauthd.conf
 
 # TLS certificate: use a mounted one if present, otherwise generate a
 # self-signed cert on first run and keep reusing it from the volume.
@@ -45,8 +53,8 @@ if [ ! -d /var/lib/cyrus/db ]; then
 fi
 chown -R cyrus:mail /var/lib/cyrus /var/spool/cyrus/mail
 
-echo "Starting saslauthd (shadow)"
-saslauthd -a shadow -n "${SASLAUTHD_THREADS:-5}" -m /var/run/saslauthd
+echo "Starting saslauthd against LDAP server $(grep '^ldap_servers:' /etc/saslauthd.conf | cut -d' ' -f2-)"
+saslauthd -a ldap -O /etc/saslauthd.conf -n "${SASLAUTHD_THREADS:-5}" -m /var/run/saslauthd
 
 for i in $(seq 1 20); do
 	[ -S /var/run/saslauthd/mux ] && break
